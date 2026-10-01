@@ -80,8 +80,10 @@ function initNavigation() {
 
   // Mobile menu toggle
   if (mobileMenuBtn && navMenu) {
-    mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = navMenu.classList.toggle('open');
+      mobileMenuBtn.classList.toggle('open', isOpen);
       mobileMenuBtn.setAttribute('aria-expanded', isOpen);
     });
 
@@ -89,8 +91,18 @@ function initNavigation() {
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('open');
+        mobileMenuBtn.classList.remove('open');
         mobileMenuBtn.setAttribute('aria-expanded', 'false');
       });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (navMenu.classList.contains('open') && !navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        navMenu.classList.remove('open');
+        mobileMenuBtn.classList.remove('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 
